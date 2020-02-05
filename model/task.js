@@ -1,3 +1,4 @@
+//som user.js
 const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/database', {useNewUrlParser: true});
