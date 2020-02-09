@@ -19,6 +19,11 @@ app.use(express.json());
 //sätter headers för åtkomst i webbläsaren?
 app.use(cors());
 
+//använder "views" i mappen "views"
+app.set("views", "views" );
+//använder motorn "ejs"
+app.set("view engine", "ejs");
+
 //använder "routes" för url:get/post/put/delete 
 app.use(listRouter);
 app.use(notFound);

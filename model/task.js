@@ -6,17 +6,17 @@ mongoose.connect('mongodb://localhost/database', {useNewUrlParser: true});
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const taskSchema = new Schema({
   //name: String,
-  taskid: { type: String, required: true, unique: true },
-  tasknote: { type: String, required: true },
-  taskprio: { type: String, required: true },
-  taskstatus: { type: String, required: true },
+  userid: { type: String, required: true, unique: true },
+  note: { type: String, required: true },
+  prio: { type: String, required: true },
+  status: { type: String, required: true },
   //location: String,
   //created_at: Date,
   //updated_at: Date
 });
 
-const User = mongoose.model('Task', userSchema);
+const Task = mongoose.model('Task', taskSchema);
 
 module.exports = Task;
