@@ -1,8 +1,18 @@
 //importerar databas-clienten
 const mongoose = require('mongoose');
 
+require('dotenv').config();
+
+const dbhostname = process.env.DBHOSTNAME || 'localhost';
+
+const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+}
+
 //ansluter och definerar adress och namn
-mongoose.connect('mongodb://localhost/database', {useNewUrlParser: true});
+mongoose.connect(`mongodb://${dbhostname}/vptdldb`, options);
 
 //importerar dokumentmall från mongoose
 const Schema = mongoose.Schema;

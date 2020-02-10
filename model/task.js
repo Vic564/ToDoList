@@ -1,7 +1,17 @@
 //som user.js
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/database', {useNewUrlParser: true});
+require('dotenv').config();
+
+const dbhostname = process.env.DBHOSTNAME || 'localhost';
+
+const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+}
+
+mongoose.connect(`mongodb://${dbhostname}/vptdldb`, options);
 
 const Schema = mongoose.Schema;
 

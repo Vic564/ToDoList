@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-nodemon": "nodemon main.js"
+    "start-nodemon": "nodemon main.js",
+    "create-example": "node ./create_example.js"
   },
   "repository": {
     "type": "git",
