@@ -3,7 +3,25 @@ const express = require('express');
 
 const User = require('../model/user');
 
+const Task = require('../model/task');
+
 const router = express.Router();
+
+//funktion som tar in data "request" <---- input i clienten
+function getList(id) {
+    //skapar promise
+    return new Promise((resolve, reject) => {
+        //letar efter matchning i databasen genom modellen Task
+        Task.find({userid: id}, (error, user) => {
+            if (error) {
+                //vid "error" reject som fångas i ".catch-funktion" .catch((err) => {console.error(err);});
+                reject(error);
+            }
+            //vid "resolve" som fångas i ".then-funktion" .then((result) => { //gör något med result });
+            resolve(user);
+        });
+    });
+}
 
 //funktion som tar in data "request" <---- input i clienten
 function validateUser(body) {
@@ -16,7 +34,14 @@ function validateUser(body) {
                 reject(error);
             }
             //vid "resolve" som fångas i ".then-funktion" .then((result) => { //gör något med result });
-            resolve(user);
+            if (user.length > 0) {
+                resolve(user[0]._id);
+            }
+            else {
+                let error = new Error();
+                error.name = "WRONG USERNAME OR PASSWORD"
+                reject(error);
+            }
         });
     });
 }
@@ -25,23 +50,31 @@ router.get("/", (request, response) => {
     response.render("index");
 });
 
+//post från klient
 router.post("/", (request, response) => {
     const body = request.body;
+    //inväntar promise från "validateUser()"
     validateUser(body)
     .then(result => {
-        if (result.length > 0) {
+        return result;
+    })
+    //id-argumentet hämtas från tidigare .then()
+    .then(id => {
+        getList(id)
+        .then((data) => {
             response.status(200).json({
                 "answer": "OK",
-                "userdata": result
+                "tasklist": data
             });
-        }
-        else {
-            response.status(400).json({
-                "answer": "Wrong USERNAME or PASSWORD"
-            });
-        }
+        })
+        .catch(error => console.error(error));
     })
-    .catch(error => console.error(error));
+    .catch(error => {
+        console.error(error);
+        response.status(400).json({
+            "answer": error.name
+        });
+    });
         
 });
 

@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/database', {useNewUrlParser: true});
 
-const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
