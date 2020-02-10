@@ -5,6 +5,8 @@ const User = require('../model/user');
 
 const Task = require('../model/task');
 
+require('dotenv').config();
+
 const router = express.Router();
 
 //funktion som tar in data "request" <---- input i clienten
@@ -50,6 +52,34 @@ router.get("/", (request, response) => {
     response.render("index");
 });
 
+//exempelanvändarens sida med ejs
+router.get("/example", (request, response) => {
+    const body = {
+        username: process.env.EXAMPLEUSERNAME || 'johndoe',
+        password: process.env.EXAMPLEPASSWORD || '12345'
+    };
+    validateUser(body)
+    .then(result => {
+        return result;
+    })
+    //id-argumentet hämtas från tidigare .then()
+    .then(id => {
+        getList(id)
+        .then((data) => {
+            console.log(data);
+            response.render("example", {data: data});
+        })
+        .catch(error => console.error(error));
+    })
+    .catch(error => {
+        console.error(error);
+        response.status(400).json({
+            "answer": "example user may not exists",
+            "error": error.name
+        });
+    });
+});
+
 //post från klient
 router.post("/", (request, response) => {
     const body = request.body;
@@ -74,8 +104,7 @@ router.post("/", (request, response) => {
         response.status(400).json({
             "answer": error.name
         });
-    });
-        
+    }); 
 });
 
 router.put("/", (request, response) => {

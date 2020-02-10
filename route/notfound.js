@@ -4,9 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get("/*", (request, response) => {
-    response.status(404).json({
-        "answer": "NOT FOUND"
-    });
+    response.render("notfound");
 });
 
 router.post("/*", (request, response) => {
