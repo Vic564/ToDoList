@@ -1,0 +1,41 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.todo-list {
+    margin-top: 20vh;
+    box-shadow: 0 0 3px black;
+    padding: 20px;
+}
+
+.task-element {
+    margin: 20px;
+}
+
+.task-element p {
+    margin-top: 20px;
+}
+
+.task-element button {
+    border: 0;
+    border-radius: 6px;
+    background: white;
+    color: black;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    padding: 4px;
+    margin: 10px 0 0 0;
+    cursor: pointer;
+    box-shadow: 0 0 2px black;
+}

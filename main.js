@@ -21,6 +21,9 @@ app.use(express.json());
 //sätter headers för åtkomst i webbläsaren?
 app.use(cors());
 
+//använder "public-mappen" för offentliga filer
+app.use('/public', express.static(__dirname + '/public'));
+
 //använder "views" i mappen "views"
 app.set("views", "views" );
 //använder motorn "ejs"

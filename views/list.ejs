@@ -8,15 +8,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="keywords" content="website, html">
         <meta name="author" content="Victor Persson">
+        <link rel="stylesheet" href="/public/list/style.css">
     <body>
-        <ul>
-            <% for (task of list) { %>
-            <li id="<%= task._id %>">
-                <p id="note_<%= task._id %>"><%= task.note %></p>
-                <button id="delete_button_<%= task._id %>" type="button">DELETE</button>
-                <button id="edit_button_<%= task._id %>" type="button">EDIT</button>
-            </li>
-            <% } %>
-        </ul>
+        <main>
+            <div class="todo-list">
+                <% for (task of list) { %>
+                <div id="<%= task._id %>" class="task-element">
+                    <p id="note_<%= task._id %>"><%= task.note %></p>
+                    <button id="delete_button_<%= task._id %>" type="button">DELETE</button>
+                    <button id="edit_button_<%= task._id %>" type="button">EDIT</button>
+                </div>
+                <% } %>
+            </div>
+        </main>
     </body>
 </html>

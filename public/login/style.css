@@ -1,0 +1,16 @@
+h1 {
+    margin-top: 36vh;
+    text-align: center;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    box-shadow: 0 0 3px black;
+}
