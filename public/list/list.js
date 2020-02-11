@@ -2,25 +2,24 @@
 const HOSTNAME = `localhost`;
 const PORT = 8080;
 
-window.onload = () => {
-    //Sätter en listener på "login-knappen" som skapar ett objekt med attribut från inputfälten...
-    document.querySelector("#save_task_button").addEventListener("click", () => {
-        const task = {
-            note: document.querySelector("#task_note").value,
-            prio: document.querySelector("#task_prio").value
-        };
-        console.log(task)
+const saveTask = () => {
+    const task = {
+        note: document.querySelector("#task_note").value,
+        prio: document.querySelector("#task_prio").value
+    };
+    console.log(task)
 
-        saveTask(task)
-        .then(response => {
-            window.location.href = window.location.href;
-        })
-        .catch(error => alert(`ERROR ${error}`));
-    });
+    postTask(task)
+    .then(response => {
+        updatePage();
+    })
+    .catch(error => alert(`ERROR ${error}`));
 }
 
+const updatePage = () => window.location.href = window.location.href;
+
 //Funktion som skickar objektet till servern och resolvar eller rejectar beroende på om den hittar en matchning i db
-const saveTask = (task) => {
+const postTask = (task) => {
     return new Promise((resolve, reject) => {
         fetch(window.location.href, {
             method: 'POST',
@@ -46,7 +45,7 @@ const saveTask = (task) => {
     });
 }
 
-const deleteTaskServer = (taskid) => {
+const deleteTask = (taskid) => {
     return new Promise((resolve, reject) => {
         console.log(JSON.stringify(taskid));
         fetch(window.location.href, {
@@ -73,10 +72,11 @@ const deleteTaskServer = (taskid) => {
     });
 }
 
-const deleteTask = (button) => {
-    deleteTaskServer(button.parentNode.id)
+const removeTask = (button) => {
+    deleteTask(button.parentNode.id)
     .then(response => {
-        window.location.href = window.location.href;
+        updatePage();
     })
     .catch(error => alert(`ERROR ${error}`));
 }
+
