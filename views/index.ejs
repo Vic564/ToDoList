@@ -22,7 +22,7 @@
                     };
                     userLogin(user)
                     .then(response => {
-                        console.log(response);
+                        window.location = response.path;
                     })
                     .catch(error => alert(error));
                 });

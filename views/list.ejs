@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>List</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="keywords" content="website, html">
+        <meta name="author" content="Victor Persson">
+    <body>
+        <ul>
+            <% for (task of list) { %>
+            <li id="<%= task._id %>">
+                <p id="note_<%= task._id %>"><%= task.note %></p>
+                <button id="delete_button_<%= task._id %>" type="button">DELETE</button>
+                <button id="edit_button_<%= task._id %>" type="button">EDIT</button>
+            </li>
+            <% } %>
+        </ul>
+    </body>
+</html>

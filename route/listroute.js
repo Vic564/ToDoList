@@ -65,9 +65,8 @@ router.get("/example", (request, response) => {
     //id-argumentet hämtas från tidigare .then()
     .then(id => {
         getList(id)
-        .then((data) => {
-            console.log(data);
-            response.render("example", {data: data});
+        .then((list) => {
+            response.render("example", {list: list});
         })
         .catch(error => console.error(error));
     })
@@ -80,6 +79,14 @@ router.get("/example", (request, response) => {
     });
 });
 
+router.get("/:userid", (request, response) => {
+    getList(request.params.userid)
+    .then(list => {
+        response.render("list", {list: list});
+    })
+    .catch(error => console.error(error));
+});
+
 //post från klient
 router.post("/", (request, response) => {
     const body = request.body;
@@ -90,14 +97,10 @@ router.post("/", (request, response) => {
     })
     //id-argumentet hämtas från tidigare .then()
     .then(id => {
-        getList(id)
-        .then((data) => {
-            response.status(200).json({
-                "answer": "OK",
-                "tasklist": data
-            });
-        })
-        .catch(error => console.error(error));
+        response.status(200).json({
+            "answer": "OK",
+            "path": `/${id}`
+        });
     })
     .catch(error => {
         console.error(error);
