@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 
 //...egna
+const loginRouter = require('./route/loginroute');
+
 const listRouter = require('./route/listroute');
 
 const notFound = require('./route/notfound');
@@ -24,7 +26,8 @@ app.set("views", "views" );
 //använder motorn "ejs"
 app.set("view engine", "ejs");
 
-//använder "routes" för url:get/post/put/delete 
+//använder "routes" för url:get/post/put/delete
+app.use(loginRouter);
 app.use(listRouter);
 app.use(notFound);
 
