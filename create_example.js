@@ -15,8 +15,10 @@ function createUser() {
             if (error) {
                 reject(error);
             }
-            console.log(`EXAMPLE USER: ${exampleUser} SAVED`);
-            resolve(exampleUser.username);
+            else {
+                console.log(`EXAMPLE USER: ${exampleUser} SAVED`);
+                resolve(exampleUser.username);
+            }
         });
     });
 }
@@ -27,25 +29,26 @@ function createTasks(username) {
             if (error) {
                 reject(error);
             }
+            else {
+                const taskList = ["eat", "sleep", "repeat"];
 
-            const taskList = ["eat", "sleep", "repeat"];
+                for (let i = 0; i < taskList.length; ++i) {
+                    const task = new Task({
+                        userid: user[0]._id,
+                        note: taskList[i],
+                        status: false,
+                        prio: i
+                    });
 
-            for (let i = 0; i < taskList.length; ++i) {
-                const task = new Task({
-                    userid: user[0]._id,
-                    note: taskList[i],
-                    status: false,
-                    prio: i
-                });
-
-                task.save(error => {
-                    if (error) {
-                        throw error;
-                    }
-                    console.log('TASK SAVED');
-                });
+                    task.save(error => {
+                        if (error) {
+                            throw error;
+                        }
+                        console.log('TASK SAVED');
+                    });
+                }
+                resolve(true);
             }
-            resolve(true);
         });
     });
 }

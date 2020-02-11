@@ -8,17 +8,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="keywords" content="website, html">
         <meta name="author" content="Victor Persson">
+        <link rel="shortcut icon" href="/public/favicon.ico">
         <link rel="stylesheet" href="/public/list/style.css">
+        <script src="/public/list/list.js" type="text/javascript"></script>
     <body>
         <main>
             <div class="todo-list">
                 <% for (task of list) { %>
                 <div id="<%= task._id %>" class="task-element">
                     <p id="note_<%= task._id %>"><%= task.note %></p>
-                    <button id="delete_button_<%= task._id %>" type="button">DELETE</button>
+                    <button id="delete_button_<%= task._id %>" type="button" onclick="deleteTask(this);">DELETE</button>
                     <button id="edit_button_<%= task._id %>" type="button">EDIT</button>
                 </div>
                 <% } %>
+                <form id="save_form" class="save-form">
+                    <label>New Task</label>
+                    <input id="task_note" type="text">
+                    <label>Prio</label>
+                    <input id="task_prio" type="range" min="1" max="<%= list.length + 1 %>" value="<%= list.length + 1 %>">
+                    <button id="save_task_button" type="button">SAVE</button>
+                </form>
             </div>
         </main>
     </body>

@@ -5,19 +5,21 @@ require('dotenv').config();
 
 const dbhostname = process.env.DBHOSTNAME || 'localhost';
 
+const dbname = process.env.DBNAME || 'vptdldb'
+
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
 }
 
-mongoose.connect(`mongodb://${dbhostname}/vptdldb`, options);
+mongoose.connect(`mongodb://${dbhostname}/${dbname}`, options);
 
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
   //name: String,
-  userid: { type: String, required: true, unique: true },
+  userid: { type: String, required: true },
   note: { type: String, required: true },
   prio: { type: String, required: true },
   status: { type: String, required: true },
