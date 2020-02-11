@@ -21,12 +21,10 @@ const Schema = mongoose.Schema;
 
 //definierar dokumentmall
 const userSchema = new Schema({
-  //name: String,
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  //location: String,
-  //created_at: Date,
-  //updated_at: Date
+  created: { type: Date, default: Date.now(), required: true},
+  modified: { type: Date, default: Date.now(), required: true}
 });
 
 //skapar modellen i mongodb efter schema

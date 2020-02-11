@@ -23,6 +23,7 @@ const getList = (id) => {
     });
 }
 
+//kollar om användaren finns
 const isValidUser = (userid) => {
     return new Promise((resolve, reject) => {
         User.find({_id: userid}, (error, user) => {
@@ -41,6 +42,7 @@ const isValidUser = (userid) => {
     });
 }
 
+//skapar "task" i databasen
 const createTask = (userid, task) => {
     return new Promise((resolve, reject) => {
         if ((task.note !== undefined) && (task.prio !== undefined)) {
@@ -66,6 +68,7 @@ const createTask = (userid, task) => {
     });
 }
 
+//tar bort task i databasen
 const deleteTask = (taskid) => {
     return new Promise((resolve, reject) => {
         if (taskid !== undefined) {
@@ -86,6 +89,28 @@ const deleteTask = (taskid) => {
     });
 }
 
+//ändrar task i databasen
+const editTask = (task) => {
+    return new Promise((resolve, reject) => {
+        if ((task.note !== undefined) && (task.prio !== undefined)) {
+            Task.updateOne({_id: task.id}, {note: task.note, prio: task.prio, modified: Date.now()}, error => {
+                if (error) {
+                    reject(error);
+                }
+                else {
+                    resolve(true);
+                }
+            })
+        }
+        else {
+            let error = new Error();
+            error.name = "NOTE AND/OR PRIO AND/OR STATUS MISSING";
+            reject(error);
+        }
+    });
+}
+
+//hämtar användarens lista och skickar till ejs
 router.get("/:userid", (request, response) => {
     isValidUser(request.params.userid)
     .then(id => {
@@ -103,6 +128,7 @@ router.get("/:userid", (request, response) => {
     });
 });
 
+//hanterar post-request och anropar funktionen som verkställer
 router.post("/:userid", (request, response) => {
     isValidUser(request.params.userid)
     .then(id => {
@@ -129,6 +155,7 @@ router.post("/:userid", (request, response) => {
     });
 });
 
+//hanterar delete-request och anropar funktionen som verkställer
 router.delete("/:userid", (request, response) => {
     isValidUser(request.params.userid)
     .then(id => {
@@ -136,6 +163,33 @@ router.delete("/:userid", (request, response) => {
         .then(result => {
             response.status(200).json({
                 "answer": `TASK ${request.body.taskid}DELETED`
+            });
+        })
+        .catch(error => {
+            console.error(error)
+            response.status(400).json({
+                "answer": "ERROR",
+                "error": error.name
+            });
+        });
+    })
+    .catch(error => {
+        console.error(error)
+        response.status(400).json({
+            "answer": "ERROR",
+            "error": error.name
+        });
+    });
+});
+
+//hanterar put-request och anropar funktionen som verkställer
+router.put("/:userid", (request, response) => {
+    isValidUser(request.params.userid)
+    .then(id => {
+        editTask(request.body)
+        .then(result => {
+            response.status(200).json({
+                "answer": `TASK ${request.body.taskid} CHANGED`
             });
         })
         .catch(error => {

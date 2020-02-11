@@ -16,13 +16,20 @@
             <div class="todo-list">
                 <% for (task of list) { %>
                 <div id="<%= task._id %>" class="task-element">
-                    <p id="note_<%= task._id %>"><%= task.note %></p>
+                    <p id="note_<%= task._id %>"><span><%= task.prio + ". " %></span><%= task.note %></p>
                     <button id="delete_button_<%= task._id %>" type="button" onclick="removeTask(this);">DELETE</button>
                     <button id="edit_button_<%= task._id %>" type="button">EDIT</button>
+                    <form id="edit_form" class="save-form">
+                        <label>Task</label>
+                        <input id="m_task_note_<%= task.id %>" value="<%= task.note %>" type="text">
+                        <label>Prio</label>
+                        <input id="m_task_prio_<%= task.id %>" type="range" min="1" max="<%= list.length %>" value="<%= task.prio %>">
+                        <button type="button" onclick="editTask(this);">SAVE</button>
+                    </form>
                 </div>
                 <% } %>
                 <form id="save_form" class="save-form">
-                    <label>New Task</label>
+                    <label>Task</label>
                     <input id="task_note" type="text">
                     <label>Prio</label>
                     <input id="task_prio" type="range" min="1" max="<%= list.length + 1 %>" value="<%= list.length + 1 %>">

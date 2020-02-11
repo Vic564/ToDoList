@@ -21,8 +21,10 @@ const taskSchema = new Schema({
   //name: String,
   userid: { type: String, required: true },
   note: { type: String, required: true },
-  prio: { type: String, required: true },
-  status: { type: String, required: true },
+  prio: { type: Number, required: true },
+  status: { type: Boolean, required: true },
+  created: { type: Date, default: Date.now(), required: true},
+  modified: { type: Date, default: Date.now(), required: true}
   //location: String,
   //created_at: Date,
   //updated_at: Date
