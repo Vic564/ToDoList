@@ -120,3 +120,50 @@ const putTask = (task) => {
         .catch(error => console.log(error));
     });
 }
+
+const completeTask = (button) => {
+    const notePrefix = "m_task_note_";
+    const prioPrefix = "m_task_prio_";
+    const task = {
+        id: button.parentNode.id,
+    };
+    putStatus(task)
+    .then(response => {
+        updatePage();
+    })
+    .catch(error => alert(`ERROR ${error}`));
+}
+
+const putStatus = (task) => {
+    return new Promise((resolve, reject) => {
+        fetch(`${window.location.href}/status`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
+        })
+        .then(response => {
+            if (response.status === 200) {
+                response.json()
+                .then(data => resolve(data))
+                .catch(error => reject(error));
+            }
+            else {
+                response.json()
+                .then(data => reject(data.error))
+                .catch(error => reject(error));
+            }
+        })
+        .catch(error => console.log(error));
+    });
+}
+
+const toggleEditForm = (button) => {
+    document.querySelector(`#edit_form_${button.parentNode.id}`).classList.toggle("save-form-show");
+}
+
+const toggleSaveForm = () => {
+    document.querySelector(`#save_form`).classList.toggle("save-form-show");
+}

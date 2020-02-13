@@ -16,10 +16,16 @@
             <div class="todo-list">
                 <% for (task of list) { %>
                 <div id="<%= task._id %>" class="task-element">
-                    <p id="note_<%= task._id %>"><span><%= task.prio + ". " %></span><%= task.note %></p>
+                    <div id="note_<%= task._id %>">
+                        <span><%= task.prio + ". " %></span><span><%= task.note %></span>
+                        <% if (task.status) { %>
+                        <span>&#10003</span>
+                        <% } %>
+                    </div>
                     <button id="delete_button_<%= task._id %>" type="button" onclick="removeTask(this);">DELETE</button>
-                    <button id="edit_button_<%= task._id %>" type="button">EDIT</button>
-                    <form id="edit_form" class="save-form">
+                    <button id="edit_button_<%= task._id %>" type="button" onclick="toggleEditForm(this)">EDIT</button>
+                    <button id="complete_button_<%= task._id %>" type="button" onclick="completeTask(this)"><% if (task.status) { %>RECALL<% } else { %>COMPLETE<% } %></button>
+                    <form id="edit_form_<%= task._id %>" class="save-form-hidden">
                         <label>Task</label>
                         <input id="m_task_note_<%= task.id %>" value="<%= task.note %>" type="text">
                         <label>Prio</label>
@@ -28,13 +34,16 @@
                     </form>
                 </div>
                 <% } %>
-                <form id="save_form" class="save-form">
-                    <label>Task</label>
-                    <input id="task_note" type="text">
-                    <label>Prio</label>
-                    <input id="task_prio" type="range" min="1" max="<%= list.length + 1 %>" value="<%= list.length + 1 %>">
-                    <button id="save_task_button" type="button" onclick="saveTask();">SAVE</button>
-                </form>
+                <div class="task-element">
+                    <button type="button" onclick="toggleSaveForm()">+NEW</button>
+                    <form id="save_form" class="save-form-hidden">
+                        <label>Task</label>
+                        <input id="task_note" type="text">
+                        <label>Prio</label>
+                        <input id="task_prio" type="range" min="1" max="<%= list.length + 1 %>" value="<%= list.length + 1 %>">
+                        <button id="save_task_button" type="button" onclick="saveTask();">SAVE</button>
+                    </form>
+                </div>
             </div>
         </main>
     </body>
