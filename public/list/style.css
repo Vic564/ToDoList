@@ -1,15 +1,8 @@
 * {
     margin: 0;
     padding: 0;
-}
-
-header {
-    display: flex;
-    justify-content: center;
-}
-
-header span {
-    margin: 10px 0 0 0;
+    font-family: 'Roboto Slab', serif;
+    font-weight: 500;
 }
 
 main {
@@ -18,58 +11,112 @@ main {
     flex-direction: row;
 }
 
+h1 {
+    text-align: center;
+}
+
+.text-red {
+    color: red;
+}
+
+.text-blue {
+    color: blue;
+}
+
+.text-orangered {
+    color: orangered;
+}
+
+.text-green {
+    color: green;
+}
+
 .todo-list {
-    margin-top: 20vh;
     box-shadow: 0 0 3px black;
     padding: 20px;
+    margin: 10px;
+    min-height: 92vh;
 }
 
 .task-element {
     margin: 20px;
 }
 
-.task-element p {
-    margin-top: 20px;
+.task-heading {
+    font-size: 18px;
+    transition: 1s;
+}
+
+.task-heading-selected {
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.apart {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
 }
 
 .options-hidden {
-    height:0px;
+    height: 0px;
     overflow: hidden;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.options-visible {
+    height: auto;
+    overflow: visible;
+    opacity: 100;
 }
 
 button {
+    height: 28px;
     border: 0;
-    border-radius: 6px;
     background: white;
     color: black;
     font-family: system-ui, sans-serif;
     font-size: 12px;
-    line-height: 1.2;
     white-space: nowrap;
     text-decoration: none;
-    padding: 4px;
-    margin: 10px 0 0 0;
+    padding: 3px 6px 3px 6px;
+    margin: 8px 2px;
     cursor: pointer;
     box-shadow: 0 0 2px black;
+    min-width: 32px; 
 }
 
 .save-form-hidden {
     height: 0px;
     overflow: hidden;
+    opacity: 0;
+    transition: 0.4s;
 }
 
 .save-form-show {
     height: auto;
     overflow: visible;
+    opacity: 100;
+}
+
+.upper-saveform {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .task-prio-active {
     width: 32px;
     height: 24px;
+    margin-right: 6px;
 }
 
 .task-note-active {
     height: 24px;
+    width: 50%;
 }
 
-
+.hidden {
+    display: none;
+}
