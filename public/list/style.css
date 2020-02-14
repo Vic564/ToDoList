@@ -32,6 +32,11 @@ main {
     margin-top: 20px;
 }
 
+.options-hidden {
+    height:0px;
+    overflow: hidden;
+}
+
 button {
     border: 0;
     border-radius: 6px;
@@ -55,6 +60,16 @@ button {
 
 .save-form-show {
     height: auto;
+    overflow: visible;
+}
+
+.task-prio-active {
+    width: 32px;
+    height: 24px;
+}
+
+.task-note-active {
+    height: 24px;
 }
 
 

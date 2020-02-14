@@ -97,8 +97,6 @@ const createTask = (userid, task) => {
 
 const updatePrioIncrement = (userid, taskPrio) => {
     return new Promise((resolve, reject) => {
-        console.log(`INCREMENT NEW: ${taskPrio.new}`);
-        console.log(`INCREMENT OLD: ${taskPrio.old}`);
         Task.updateMany({userid: userid, prio: { $gte: taskPrio.new, $lt: taskPrio.old }}, { $inc: { prio: 1 } }, error => {
             if (error) {
                 reject(error);
@@ -112,8 +110,6 @@ const updatePrioIncrement = (userid, taskPrio) => {
 
 const updatePrioDecrement = (userid, taskPrio) => {
     return new Promise((resolve, reject) => {
-        console.log(`DECREMENT NEW: ${taskPrio.new}`);
-        console.log(`DECREMENT OLD: ${taskPrio.old}`);
         Task.updateMany({userid: userid, prio: { $lte: taskPrio.new, $gt: taskPrio.old }}, { $inc: { prio: -1 } }, error => {
             if (error) {
                 reject(error);
@@ -165,17 +161,31 @@ const deleteTask = (taskid) => {
 const editTask = (userid, task) => {
     return new Promise((resolve, reject) => {
         if ((task.note !== undefined) && (task.prio !== undefined)) {
-            getTask(task.id)
-            .then(async listObject => {
-                return await listObject.prio;
+            getList(userid)
+            .then(async taskList => {
+                return await taskList.length;
+            })
+            .then(async maxPrio => {
+                const oldPrio = await getTask(task.id)
+                .then(async listObject => {
+                    return await listObject.prio;
+                })
+                .catch(error => console.error(error));
+                if (task.prio > maxPrio) {
+                    task.prio = maxPrio;
+                }
+                else if (task.prio <= 0) {
+                    task.prio = 1;
+                }
+                
+                return oldPrio;
             })
             .then(async oldPrio => {
                 const taskPrio = {
                     new: task.prio,
                     old: oldPrio
                 }
-                console.log(`OLD PRIO: ${taskPrio.old}`);
-                console.log(`NEW PRIO: ${taskPrio.new}`);
+                
                 await updatePrioIncrement(userid, taskPrio)
                 .catch(error => console.error(error));
                 return taskPrio;

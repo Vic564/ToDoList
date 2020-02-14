@@ -56,7 +56,7 @@ const postTask = (task) => {
 }
 
 const removeTask = (button) => {
-    deleteTask(button.parentNode.id)
+    deleteTask(button.parentNode.parentNode.id.replace("task_", ""))
     .then(response => {
         updatePage();
     })
@@ -89,21 +89,6 @@ const deleteTask = (taskid) => {
     });
 }
 
-const editTask = (button) => {
-    const notePrefix = "m_task_note_";
-    const prioPrefix = "m_task_prio_";
-    const task = {
-        id: button.parentNode.parentNode.id,
-        note: document.querySelector(`#${notePrefix}${button.parentNode.parentNode.id}`).value,
-        prio: document.querySelector(`#${prioPrefix}${button.parentNode.parentNode.id}`).value,
-    };
-    putTask(task)
-    .then(response => {
-        updatePage();
-    })
-    .catch(error => alert(`ERROR ${error}`));
-}
-
 const putTask = (task) => {
     return new Promise((resolve, reject) => {
         fetch(window.location.href, {
@@ -131,10 +116,8 @@ const putTask = (task) => {
 }
 
 const completeTask = (button) => {
-    const notePrefix = "m_task_note_";
-    const prioPrefix = "m_task_prio_";
     const task = {
-        id: button.parentNode.id,
+        id: button.parentNode.parentNode.id.replace("task_", "")
     };
     putStatus(task)
     .then(response => {
@@ -169,10 +152,55 @@ const putStatus = (task) => {
     });
 }
 
-const toggleEditForm = (button) => document.querySelector(`#edit_form_${button.parentNode.id}`).classList.toggle("save-form-show");
+const toggleEditForm = (button) => {
+    const taskid = button.parentNode.parentNode.id.replace("task_", "");
+    button.parentNode.parentNode.childNodes[1].childNodes[1].remove();
+    button.parentNode.parentNode.childNodes[1].childNodes[2].remove();
+
+    let inputPrio = document.createElement("input");
+    inputPrio.id = "m_task_prio_" + taskid;
+    inputPrio.setAttribute("type", "number");
+    inputPrio.setAttribute("class", "task-prio-active");
+    button.parentNode.parentNode.childNodes[1].insertBefore(inputPrio, button.parentNode.parentNode.childNodes[1].childNodes[1]);
+
+    let inputTask = document.createElement("input");
+    inputTask.id = "m_task_note_" + taskid;
+    inputTask.setAttribute("type", "text");
+    inputTask.setAttribute("class", "task-note-active");
+    button.parentNode.parentNode.childNodes[1].insertBefore(inputTask, button.parentNode.parentNode.childNodes[1].childNodes[3]);
+
+    let saveButton = document.createElement("button");
+    saveButton.setAttribute("type", "button");
+    saveButton.innerText = "SAVE";
+    saveButton.addEventListener("click", () => {
+        const task = {
+            id: taskid,
+            note: document.querySelector(`#${inputTask.id}`).value,
+            prio: document.querySelector(`#${inputPrio.id}`).value
+        };
+        putTask(task)
+        .then(response => {
+            updatePage();
+        })
+        .catch(error => alert(`ERROR ${error}`));
+    });
+    button.parentNode.parentNode.appendChild(saveButton);
+}
+
+const editTask = (button) => {
+    const notePrefix = "m_task_note_";
+    const prioPrefix = "m_task_prio_";
+    const taskid = button.parentNode.parentNode.id.replace("task_", "");
+    const task = {
+        id: button.parentNode.parentNode.id,
+        note: document.querySelector(`#${notePrefix}${taskid}`).value,
+        prio: document.querySelector(`#${prioPrefix}${taskid}`).value
+    };
+    putTask(task)
+    .then(response => {
+        updatePage();
+    })
+    .catch(error => alert(`ERROR ${error}`));
+}
 
 const toggleSaveForm = () => document.querySelector('#save_form').classList.toggle("save-form-show");
-
-const sCurrentPrio = () => document.querySelector('#s_display_prio').innerHTML = document.querySelector("#task_prio").value;
-
-const mCurrentPrio = (prio) => document.querySelector(`#m_display_prio_${prio.parentNode.parentNode.id}`).innerHTML = prio.value;
