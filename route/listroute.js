@@ -12,7 +12,7 @@ const getList = (id) => {
     //skapar promise
     return new Promise((resolve, reject) => {
         //letar efter matchning i databasen genom modellen Task
-        Task.find({userid: id}, (error, taskList) => {
+        Task.find({userid: id}, {}, {sort: {prio: 1} }, (error, taskList) => {
             if (error) {
                 //vid "error" reject som fångas i ".catch-funktion" .catch((err) => {console.error(err);});
                 reject(error);
@@ -50,7 +50,6 @@ const createTask = (userid, task) => {
             .then(taskList => {
                 //kontrollerar att prio är inom ramen
                 const maxPrio = taskList.length + 1;
-                console.log(`MAXPRIO: ${maxPrio}`)
                 if (task.prio > maxPrio) {
                     task.prio = maxPrio;
                 }
@@ -98,14 +97,45 @@ const createTask = (userid, task) => {
 
 const updatePrioIncrement = (userid, taskPrio) => {
     return new Promise((resolve, reject) => {
-        console.log(taskPrio);
-        Task.updateMany({userid: userid, prio: { $gte: taskPrio.new, $lt: taskPrio.old }}, { $inc: { prio: 1 } , modified: Date.now()}, error => {
+        console.log(`INCREMENT NEW: ${taskPrio.new}`);
+        console.log(`INCREMENT OLD: ${taskPrio.old}`);
+        Task.updateMany({userid: userid, prio: { $gte: taskPrio.new, $lt: taskPrio.old }}, { $inc: { prio: 1 } }, error => {
             if (error) {
                 reject(error);
             }
             else {
                 resolve(true);
             }
+        });
+    });
+}
+
+const updatePrioDecrement = (userid, taskPrio) => {
+    return new Promise((resolve, reject) => {
+        console.log(`DECREMENT NEW: ${taskPrio.new}`);
+        console.log(`DECREMENT OLD: ${taskPrio.old}`);
+        Task.updateMany({userid: userid, prio: { $lte: taskPrio.new, $gt: taskPrio.old }}, { $inc: { prio: -1 } }, error => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(true);
+            }
+        });
+    });
+}
+
+const getTask = (taskid) => {
+    //skapar promise
+    return new Promise((resolve, reject) => {
+        //letar efter matchning i databasen genom modellen Task
+        Task.find({_id: taskid}, (error, task) => {
+            if (error) {
+                //vid "error" reject som fångas i ".catch-funktion" .catch((err) => {console.error(err);});
+                reject(error);
+            }
+            //vid "resolve" som fångas i ".then-funktion" .then((result) => { //gör något med result });
+            resolve(task[0]);
         });
     });
 }
@@ -132,17 +162,40 @@ const deleteTask = (taskid) => {
 }
 
 //ändrar task i databasen
-const editTask = (task) => {
+const editTask = (userid, task) => {
     return new Promise((resolve, reject) => {
         if ((task.note !== undefined) && (task.prio !== undefined)) {
-            Task.updateOne({_id: task.id}, {note: task.note, prio: task.prio, modified: Date.now()}, error => {
-                if (error) {
-                    reject(error);
-                }
-                else {
-                    resolve(true);
-                }
+            getTask(task.id)
+            .then(async listObject => {
+                return await listObject.prio;
             })
+            .then(async oldPrio => {
+                const taskPrio = {
+                    new: task.prio,
+                    old: oldPrio
+                }
+                console.log(`OLD PRIO: ${taskPrio.old}`);
+                console.log(`NEW PRIO: ${taskPrio.new}`);
+                await updatePrioIncrement(userid, taskPrio)
+                .catch(error => console.error(error));
+                return taskPrio;
+            })
+            .then(async taskPrio => {
+                await updatePrioDecrement(userid, taskPrio)
+                .catch(error => console.log(error));
+                return taskPrio;
+            })
+            .then(async (taskPrio) => {
+                await Task.updateOne({_id: task.id}, {note: task.note, prio: taskPrio.new, modified: Date.now()}, error => {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(true);
+                    }
+                });
+            })
+            .catch(error => console.error(error));
         }
         else {
             let error = new Error();
@@ -266,7 +319,7 @@ router.delete("/:userid", (request, response) => {
 router.put("/:userid", (request, response) => {
     isValidUser(request.params.userid)
     .then(id => {
-        editTask(request.body)
+        editTask(request.params.userid, request.body)
         .then(result => {
             response.status(200).json({
                 "answer": `TASK ${request.body.taskid} CHANGED`

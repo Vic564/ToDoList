@@ -34,7 +34,8 @@
                         <label>Task</label>
                         <input id="m_task_note_<%= task.id %>" value="<%= task.note %>" type="text">
                         <label>Prio</label>
-                        <input id="m_task_prio_<%= task.id %>" type="range" min="1" max="<%= list.length %>" value="<%= task.prio %>">
+                        <span id="m_display_prio_<%= task.id %>"><%= task.prio %></span>
+                        <input id="m_task_prio_<%= task.id %>" type="range" min="1" max="<%= list.length %>" value="<%= task.prio %>" onchange="mCurrentPrio(this);">
                         <button type="button" onclick="editTask(this);">SAVE</button>
                     </form>
                 </div>
@@ -45,7 +46,8 @@
                         <label>Task</label>
                         <input id="task_note" type="text">
                         <label>Prio</label>
-                        <input id="task_prio" type="range" min="1" max="<%= list.length + 1 %>" value="<%= list.length + 1 %>">
+                        <span id="s_display_prio"><%= list.length + 1 %></span>
+                        <input id="task_prio" type="range" min="1" max="<%= list.length + 1 %>" value="<%= list.length + 1 %>" onchange="sCurrentPrio();">
                         <button id="save_task_button" type="button" onclick="saveTask();">SAVE</button>
                     </form>
                 </div>

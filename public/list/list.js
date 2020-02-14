@@ -169,10 +169,10 @@ const putStatus = (task) => {
     });
 }
 
-const toggleEditForm = (button) => {
-    document.querySelector(`#edit_form_${button.parentNode.id}`).classList.toggle("save-form-show");
-}
+const toggleEditForm = (button) => document.querySelector(`#edit_form_${button.parentNode.id}`).classList.toggle("save-form-show");
 
-const toggleSaveForm = () => {
-    document.querySelector(`#save_form`).classList.toggle("save-form-show");
-}
+const toggleSaveForm = () => document.querySelector('#save_form').classList.toggle("save-form-show");
+
+const sCurrentPrio = () => document.querySelector('#s_display_prio').innerHTML = document.querySelector("#task_prio").value;
+
+const mCurrentPrio = (prio) => document.querySelector(`#m_display_prio_${prio.parentNode.parentNode.id}`).innerHTML = prio.value;

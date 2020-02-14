@@ -37,7 +37,7 @@ function createTasks(username) {
                         userid: user[0]._id,
                         note: taskList[i],
                         status: false,
-                        prio: i
+                        prio: i + 1
                     });
 
                     task.save(error => {
