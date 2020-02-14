@@ -3,9 +3,19 @@
     padding: 0;
 }
 
+header {
+    display: flex;
+    justify-content: center;
+}
+
+header span {
+    margin: 10px 0 0 0;
+}
+
 main {
     display: flex;
     justify-content: center;
+    flex-direction: row;
 }
 
 .todo-list {

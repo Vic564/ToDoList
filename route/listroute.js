@@ -46,25 +46,67 @@ const isValidUser = (userid) => {
 const createTask = (userid, task) => {
     return new Promise((resolve, reject) => {
         if ((task.note !== undefined) && (task.prio !== undefined)) {
-            const newTask = new Task({
-                userid: userid,
-                note: task.note,
-                status: false,
-                prio: task.prio
-            });
-
-            newTask.save(error => {
-                if (error) {
-                    reject(error);
+            getList(userid)
+            .then(taskList => {
+                //kontrollerar att prio är inom ramen
+                const maxPrio = taskList.length + 1;
+                console.log(`MAXPRIO: ${maxPrio}`)
+                if (task.prio > maxPrio) {
+                    task.prio = maxPrio;
                 }
-                resolve(true);
-            });
+                else if (task.prio <= 0) {
+                    task.prio = 1;
+                }
+                const taskPrio = {
+                    new: task.prio,
+                    old: maxPrio
+                };
+                //uppdaterar prio i databasen
+                updatePrioIncrement(userid, taskPrio)
+                .then(result => {
+                    const newTask = new Task({
+                        userid: userid,
+                        note: task.note,
+                        status: false,
+                        prio: task.prio
+                    });
+        
+                    newTask.save(error => {
+                        if (error) {
+                            reject(error);
+                        }
+                        resolve(true);
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            })
+            .catch(error => {
+                let e = new Error();
+                e.name = "SOMETHING WENT WRONG";
+                reject(e);
+            })
         }
         else {
             let error = new Error();
             error.name = "NOTE AND/OR PRIO MISSING";
             reject(error);
         }
+    });
+}
+
+const updatePrioIncrement = (userid, taskPrio) => {
+    return new Promise((resolve, reject) => {
+        console.log(taskPrio);
+        Task.updateMany({userid: userid, prio: { $gte: taskPrio.new, $lt: taskPrio.old }}, { $inc: { prio: 1 } , modified: Date.now()}, error => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                resolve(true);
+            }
+        });
     });
 }
 

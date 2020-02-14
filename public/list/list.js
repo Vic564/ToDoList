@@ -2,7 +2,16 @@
 const HOSTNAME = `localhost`;
 const PORT = 8080;
 
-const updatePage = () => window.location.href = window.location.href;
+const updatePage = (sort = "prio") => {
+    let url = "";
+    if (sort === "prio") {
+        url = window.location.href;
+    }
+    else if (sort === "date") {
+        url = window.location.href;
+    }
+    window.location.href = url;
+}
 
 const saveTask = (button) => {
     const task = {
