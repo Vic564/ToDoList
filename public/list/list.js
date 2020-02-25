@@ -63,7 +63,7 @@ const removeTask = (button) => {
     .catch(error => alert(`ERROR ${error}`));
 }
 
-const deleteTask = (taskid) => {
+const deleteTask = (taskID) => {
     return new Promise((resolve, reject) => {
         fetch(window.location.href, {
             method: 'DELETE',
@@ -71,7 +71,7 @@ const deleteTask = (taskid) => {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({taskid: taskid})
+            body: JSON.stringify({taskID: taskID})
         })
         .then(response => {
             if (response.status === 200) {
@@ -158,41 +158,63 @@ const toggleOptions  = (taskHeading) => {
 }
 
 const createEditForm = (button) => {
-    const taskid = button.parentNode.parentNode.id.replace("task_", "");
-    
+    const taskID = button.parentNode.parentNode.id.replace("task_", "");
     button.parentNode.classList.toggle("options-visible");
+    const taskObject = button.parentNode.parentNode;
+    const current = getCurrentValues(taskObject);
+    const setID = {
+        prio: `edit_task_prio_${taskID}`,
+        note: `edit_task_note_${taskID}`
+    }
+    removeCurrentText(taskObject);
+    createInputPrio(setID.prio, current.prio, taskObject);
+    createInputNote(setID.note, current.note, taskObject);
+    createSaveButton(taskID, setID, taskObject);
+    createCancelButton(taskObject);
+}
 
-    const currentPrio = button.parentNode.parentNode.childNodes[1].childNodes[1].innerHTML;
-    const currentNote = button.parentNode.parentNode.childNodes[1].childNodes[3].innerHTML;
+const getCurrentValues = (taskObject) => {
+    return {
+        prio: taskObject.childNodes[1].childNodes[1].innerHTML,
+        note: taskObject.childNodes[1].childNodes[3].innerHTML
+    };
+}
 
-    button.parentNode.parentNode.childNodes[1].childNodes[1].remove();
-    button.parentNode.parentNode.childNodes[1].childNodes[2].remove();
+const removeCurrentText = (taskObject) => {
+    taskObject.childNodes[1].childNodes[1].remove();
+    taskObject.childNodes[1].childNodes[2].remove();
+}
 
+const createInputPrio = (setID, currentPrio, taskObject) => {
     let inputPrio = document.createElement("input");
-    inputPrio.id = "m_task_prio_" + taskid;
+    inputPrio.id = setID;
     inputPrio.setAttribute("type", "number");
     inputPrio.value = currentPrio;
     inputPrio.setAttribute("min", "1");
     inputPrio.setAttribute("max", document.querySelector("#task_prio").value - 1);
     inputPrio.setAttribute("class", "task-prio-active");
-    button.parentNode.parentNode.childNodes[1].insertBefore(inputPrio, button.parentNode.parentNode.childNodes[1].childNodes[1]);
+    taskObject.childNodes[1].insertBefore(inputPrio, taskObject.childNodes[1].childNodes[1]);
+}
 
+const createInputNote = (setID, currentNote, taskObject) => {
     let inputTask = document.createElement("input");
-    inputTask.id = "m_task_note_" + taskid;
+    inputTask.id = setID;
     inputTask.setAttribute("type", "text");
     inputTask.value = currentNote;
     inputTask.setAttribute("class", "task-note-active");
-    button.parentNode.parentNode.childNodes[1].insertBefore(inputTask, button.parentNode.parentNode.childNodes[1].childNodes[3]);
+    taskObject.childNodes[1].insertBefore(inputTask, taskObject.childNodes[1].childNodes[3]);
+}
 
+const createSaveButton = (taskID, setID, taskObject) => {
     let saveButton = document.createElement("button");
     saveButton.setAttribute("type", "button");
     saveButton.innerText = "SAVE";
     saveButton.classList.add("text-green")
     saveButton.addEventListener("click", () => {
         const task = {
-            id: taskid,
-            note: document.querySelector(`#${inputTask.id}`).value,
-            prio: document.querySelector(`#${inputPrio.id}`).value
+            id: taskID,
+            note: document.querySelector(`#${setID.note}`).value,
+            prio: document.querySelector(`#${setID.prio}`).value
         };
         if (task.note.length > 0) {
             putTask(task)
@@ -205,14 +227,16 @@ const createEditForm = (button) => {
             alert("You have to write a task!");
         }
     });
-    button.parentNode.parentNode.appendChild(saveButton);
+    taskObject.appendChild(saveButton);
+}
 
+const createCancelButton = (taskObject) => {
     let cancelButton = document.createElement("button");
     cancelButton.setAttribute("type", "button");
     cancelButton.innerText = "CANCEL";
-    cancelButton.classList.add("text-red")
+    cancelButton.classList.add("text-red");
     cancelButton.addEventListener("click", () => updatePage());
-    button.parentNode.parentNode.appendChild(cancelButton);
+    taskObject.appendChild(cancelButton);
 }
 
 const toggleSaveForm = (button) => {
