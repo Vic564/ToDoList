@@ -17,7 +17,7 @@ mongoose.connect(`mongodb://${dbHostName}/${dbName}`, options);
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
-  userid: { type: String, required: true },
+  userID: { type: String, required: true },
   note: { type: String, required: true },
   prio: { type: Number, required: true },
   status: { type: Boolean, required: true },

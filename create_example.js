@@ -34,7 +34,7 @@ function createTasks(username) {
 
                 for (let i = 0; i < taskList.length; ++i) {
                     const task = new Task({
-                        userid: user[0]._id,
+                        userID: user[0]._id,
                         note: taskList[i],
                         status: false,
                         prio: i + 1
@@ -57,4 +57,4 @@ createUser()
 .then(username => {
     createTasks(username);
 })
-.catch(err => console.log(err));
+.catch(err => console.error(err));

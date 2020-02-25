@@ -8,7 +8,7 @@ const router = express.Router();
 
 const getList = (id) => {
     return new Promise((resolve, reject) => {
-        Task.find({userid: id}, {}, {sort: {prio: 1} }, (error, taskList) => {
+        Task.find({userID: id}, {}, {sort: {prio: 1} }, (error, taskList) => {
             if (error) {
                 reject(error);
             }
@@ -17,9 +17,9 @@ const getList = (id) => {
     });
 }
 
-const isValidUser = (userid) => {
+const isValidUser = (userID) => {
     return new Promise((resolve, reject) => {
-        User.find({_id: userid}, (error, user) => {
+        User.find({_id: userID}, (error, user) => {
             if (error) {
                 reject(error);
             }
@@ -35,10 +35,10 @@ const isValidUser = (userid) => {
     });
 }
 
-const createTask = (userid, task) => {
+const createTask = (userID, task) => {
     return new Promise((resolve, reject) => {
         if ((task.note !== undefined) && (task.prio !== undefined)) {
-            getList(userid)
+            getList(userID)
             .then(taskList => {
                 const maxPrio = taskList.length + 1;
                 if (task.prio > maxPrio) {
@@ -51,10 +51,10 @@ const createTask = (userid, task) => {
                     new: task.prio,
                     old: maxPrio
                 };
-                updatePrioIncrement(userid, taskPrio)
+                updatePrioIncrement(userID, taskPrio)
                 .then(result => {
                     const newTask = new Task({
-                        userid: userid,
+                        userID: userID,
                         note: task.note,
                         status: false,
                         prio: task.prio
@@ -85,9 +85,9 @@ const createTask = (userid, task) => {
     });
 }
 
-const updatePrioIncrement = (userid, taskPrio) => {
+const updatePrioIncrement = (userID, taskPrio) => {
     return new Promise((resolve, reject) => {
-        Task.updateMany({userid: userid, prio: { $gte: taskPrio.new, $lt: taskPrio.old }}, { $inc: { prio: 1 } }, error => {
+        Task.updateMany({userID: userID, prio: { $gte: taskPrio.new, $lt: taskPrio.old }}, { $inc: { prio: 1 } }, error => {
             if (error) {
                 reject(error);
             }
@@ -98,9 +98,9 @@ const updatePrioIncrement = (userid, taskPrio) => {
     });
 }
 
-const updatePrioDecrement = (userid, taskPrio) => {
+const updatePrioDecrement = (userID, taskPrio) => {
     return new Promise((resolve, reject) => {
-        Task.updateMany({userid: userid, prio: { $lte: taskPrio.new, $gt: taskPrio.old }}, { $inc: { prio: -1 } }, error => {
+        Task.updateMany({userID: userID, prio: { $lte: taskPrio.new, $gt: taskPrio.old }}, { $inc: { prio: -1 } }, error => {
             if (error) {
                 reject(error);
             }
@@ -111,9 +111,9 @@ const updatePrioDecrement = (userid, taskPrio) => {
     });
 }
 
-const getTask = (taskid) => {
+const getTask = (taskID) => {
     return new Promise((resolve, reject) => {
-        Task.find({_id: taskid}, (error, task) => {
+        Task.find({_id: taskID}, (error, task) => {
             if (error) {
                 reject(error);
             }
@@ -122,10 +122,10 @@ const getTask = (taskid) => {
     });
 }
 
-const deleteTask = (taskid) => {
+const deleteTask = (taskID) => {
     return new Promise((resolve, reject) => {
-        if (taskid !== undefined) {
-            Task.deleteOne({_id: taskid}, error => {
+        if (taskID !== undefined) {
+            Task.deleteOne({_id: taskID}, error => {
                 if (error) {
                     reject(error);
                 }
@@ -142,10 +142,10 @@ const deleteTask = (taskid) => {
     });
 }
 
-const editTask = (userid, task) => {
+const editTask = (userID, task) => {
     return new Promise((resolve, reject) => {
         if ((task.note !== undefined) && (task.prio !== undefined)) {
-            getList(userid)
+            getList(userID)
             .then(async taskList => {
                 return await taskList.length;
             })
@@ -170,12 +170,12 @@ const editTask = (userid, task) => {
                     old: oldPrio
                 }
                 
-                await updatePrioIncrement(userid, taskPrio)
+                await updatePrioIncrement(userID, taskPrio)
                 .catch(error => console.error(error));
                 return taskPrio;
             })
             .then(async taskPrio => {
-                await updatePrioDecrement(userid, taskPrio)
+                await updatePrioDecrement(userID, taskPrio)
                 .catch(error => console.log(error));
                 return taskPrio;
             })
@@ -237,8 +237,8 @@ const getCurrentStatus = (id) => {
     });
 }
 
-router.get("/:userid", (request, response) => {
-    isValidUser(request.params.userid)
+router.get("/:userID", (request, response) => {
+    isValidUser(request.params.userID)
     .then(id => {
         getList(id)
         .then(list => {
@@ -254,8 +254,8 @@ router.get("/:userid", (request, response) => {
     });
 });
 
-router.post("/:userid", (request, response) => {
-    isValidUser(request.params.userid)
+router.post("/:userID", (request, response) => {
+    isValidUser(request.params.userID)
     .then(id => {
         createTask(id, request.body)
         .then(result => {
@@ -280,13 +280,13 @@ router.post("/:userid", (request, response) => {
     });
 });
 
-router.delete("/:userid", (request, response) => {
-    isValidUser(request.params.userid)
+router.delete("/:userID", (request, response) => {
+    isValidUser(request.params.userID)
     .then(id => {
-        deleteTask(request.body.taskid)
+        deleteTask(request.body.taskID)
         .then(result => {
             response.status(200).json({
-                "answer": `TASK ${request.body.taskid}DELETED`
+                "answer": `TASK ${request.body.taskID}DELETED`
             });
         })
         .catch(error => {
@@ -306,13 +306,13 @@ router.delete("/:userid", (request, response) => {
     });
 });
 
-router.put("/:userid", (request, response) => {
-    isValidUser(request.params.userid)
+router.put("/:userID", (request, response) => {
+    isValidUser(request.params.userID)
     .then(id => {
-        editTask(request.params.userid, request.body)
+        editTask(request.params.userID, request.body)
         .then(result => {
             response.status(200).json({
-                "answer": `TASK ${request.body.taskid} CHANGED`
+                "answer": `TASK ${request.body.taskID} CHANGED`
             });
         })
         .catch(error => {
@@ -332,13 +332,13 @@ router.put("/:userid", (request, response) => {
     });
 });
 
-router.put("/:userid/status", (request, response) => {
-    isValidUser(request.params.userid)
+router.put("/:userID/status", (request, response) => {
+    isValidUser(request.params.userID)
     .then(id => {
         toggleStatus(request.body)
         .then(result => {
             response.status(200).json({
-                "answer": `TASK ${request.body.taskid} CHANGED`
+                "answer": `TASK ${request.body.taskID} CHANGED`
             });
         })
         .catch(error => {
