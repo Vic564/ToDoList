@@ -1,4 +1,3 @@
-//importerar moduler
 const express = require('express');
 
 const User = require('../model/user');
@@ -7,23 +6,17 @@ const Task = require('../model/task');
 
 const router = express.Router();
 
-//funktion som tar in data "request" <---- input i clienten
 const getList = (id) => {
-    //skapar promise
     return new Promise((resolve, reject) => {
-        //letar efter matchning i databasen genom modellen Task
         Task.find({userid: id}, {}, {sort: {prio: 1} }, (error, taskList) => {
             if (error) {
-                //vid "error" reject som fångas i ".catch-funktion" .catch((err) => {console.error(err);});
                 reject(error);
             }
-            //vid "resolve" som fångas i ".then-funktion" .then((result) => { //gör något med result });
             resolve(taskList);
         });
     });
 }
 
-//kollar om användaren finns
 const isValidUser = (userid) => {
     return new Promise((resolve, reject) => {
         User.find({_id: userid}, (error, user) => {
@@ -42,13 +35,11 @@ const isValidUser = (userid) => {
     });
 }
 
-//skapar "task" i databasen
 const createTask = (userid, task) => {
     return new Promise((resolve, reject) => {
         if ((task.note !== undefined) && (task.prio !== undefined)) {
             getList(userid)
             .then(taskList => {
-                //kontrollerar att prio är inom ramen
                 const maxPrio = taskList.length + 1;
                 if (task.prio > maxPrio) {
                     task.prio = maxPrio;
@@ -60,7 +51,6 @@ const createTask = (userid, task) => {
                     new: task.prio,
                     old: maxPrio
                 };
-                //uppdaterar prio i databasen
                 updatePrioIncrement(userid, taskPrio)
                 .then(result => {
                     const newTask = new Task({
@@ -122,21 +112,16 @@ const updatePrioDecrement = (userid, taskPrio) => {
 }
 
 const getTask = (taskid) => {
-    //skapar promise
     return new Promise((resolve, reject) => {
-        //letar efter matchning i databasen genom modellen Task
         Task.find({_id: taskid}, (error, task) => {
             if (error) {
-                //vid "error" reject som fångas i ".catch-funktion" .catch((err) => {console.error(err);});
                 reject(error);
             }
-            //vid "resolve" som fångas i ".then-funktion" .then((result) => { //gör något med result });
             resolve(task[0]);
         });
     });
 }
 
-//tar bort task i databasen
 const deleteTask = (taskid) => {
     return new Promise((resolve, reject) => {
         if (taskid !== undefined) {
@@ -157,7 +142,6 @@ const deleteTask = (taskid) => {
     });
 }
 
-//ändrar task i databasen
 const editTask = (userid, task) => {
     return new Promise((resolve, reject) => {
         if ((task.note !== undefined) && (task.prio !== undefined)) {
@@ -253,7 +237,6 @@ const getCurrentStatus = (id) => {
     });
 }
 
-//hämtar användarens lista och skickar till ejs
 router.get("/:userid", (request, response) => {
     isValidUser(request.params.userid)
     .then(id => {
@@ -271,7 +254,6 @@ router.get("/:userid", (request, response) => {
     });
 });
 
-//hanterar post-request och anropar funktionen som verkställer
 router.post("/:userid", (request, response) => {
     isValidUser(request.params.userid)
     .then(id => {
@@ -298,7 +280,6 @@ router.post("/:userid", (request, response) => {
     });
 });
 
-//hanterar delete-request och anropar funktionen som verkställer
 router.delete("/:userid", (request, response) => {
     isValidUser(request.params.userid)
     .then(id => {
@@ -325,7 +306,6 @@ router.delete("/:userid", (request, response) => {
     });
 });
 
-//hanterar put-request och anropar funktionen som verkställer
 router.put("/:userid", (request, response) => {
     isValidUser(request.params.userid)
     .then(id => {
@@ -378,5 +358,4 @@ router.put("/:userid/status", (request, response) => {
     });
 });
 
-//exporterar modul:"router" (URL handling code) => {skickar data (post, get) till adress} och hur det ska hanteras (response)
 module.exports = router;

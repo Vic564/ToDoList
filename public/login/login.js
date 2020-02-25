@@ -1,4 +1,3 @@
-//sätter konstanter för url och port
 const HOSTNAME = `localhost`;
 const PORT = 8080;
 
@@ -14,7 +13,6 @@ const userLogin = () => {
     .catch(error => alert(error));
 }
 
-//Funktion som skickar objektet till servern och resolvar eller rejectar beroende på om den hittar en matchning i db
 const postLogin = (user) => {
     return new Promise((resolve, reject) => {
         fetch(`http://${HOSTNAME}:${PORT}`, {

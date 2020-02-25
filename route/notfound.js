@@ -1,4 +1,3 @@
-//som "listroute" för url som inte finns
 const express = require('express');
 
 const router = express.Router();
