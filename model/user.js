@@ -1,11 +1,10 @@
-//importerar databas-clienten
 const mongoose = require('mongoose');
 
 require('dotenv').config();
 
-const dbhostname = process.env.DBHOSTNAME || 'localhost';
+const dbHostName = process.env.DBHOSTNAME || 'localhost';
 
-const dbname = process.env.DBNAME || 'vptdldb'
+const dbName = process.env.DBNAME || 'vptdldb'
 
 const options = {
     useNewUrlParser: true,
@@ -13,13 +12,10 @@ const options = {
     useCreateIndex: true
 }
 
-//ansluter och definerar adress och namn
-mongoose.connect(`mongodb://${dbhostname}/${dbname}`, options);
+mongoose.connect(`mongodb://${dbHostName}/${dbName}`, options);
 
-//importerar dokumentmall från mongoose
 const Schema = mongoose.Schema;
 
-//definierar dokumentmall
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -27,8 +23,6 @@ const userSchema = new Schema({
   modified: { type: Date, default: Date.now, required: true}
 });
 
-//skapar modellen i mongodb efter schema
 const user = mongoose.model('User', userSchema);
 
-//exporterar modellen...
 module.exports = user;

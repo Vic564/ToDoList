@@ -1,4 +1,3 @@
-//sätter konstanter för url och port
 const HOSTNAME = `localhost`;
 const PORT = 8080;
 
@@ -30,7 +29,6 @@ const saveTask = () => {
     }
 }
 
-//Funktion som skickar objektet till servern och resolvar eller rejectar beroende på om den hittar en matchning i db
 const postTask = (task) => {
     return new Promise((resolve, reject) => {
         fetch(window.location.href, {
@@ -159,7 +157,7 @@ const toggleOptions  = (taskHeading) => {
     taskHeading.classList.toggle("task-heading-selected")
 }
 
-const toggleEditForm = (button) => {
+const createEditForm = (button) => {
     const taskid = button.parentNode.parentNode.id.replace("task_", "");
     
     button.parentNode.classList.toggle("options-visible");
@@ -169,8 +167,6 @@ const toggleEditForm = (button) => {
 
     button.parentNode.parentNode.childNodes[1].childNodes[1].remove();
     button.parentNode.parentNode.childNodes[1].childNodes[2].remove();
-
-    console.log(currentNote);
 
     let inputPrio = document.createElement("input");
     inputPrio.id = "m_task_prio_" + taskid;
@@ -198,7 +194,7 @@ const toggleEditForm = (button) => {
             note: document.querySelector(`#${inputTask.id}`).value,
             prio: document.querySelector(`#${inputPrio.id}`).value
         };
-        if (task.note.lenth > 0) { 
+        if (task.note.length > 0) {
             putTask(task)
             .then(response => {
                 updatePage();
