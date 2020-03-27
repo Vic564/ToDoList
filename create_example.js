@@ -1,8 +1,41 @@
+const mongoose = require('mongoose');
+
 const User = require('./model/user');
-
 const Task = require('./model/task');
-
 const {CONFIG} = require('./constant');
+
+const deleteUser = () => {
+    return new Promise((resolve, reject) => {
+        User.deleteOne({username: CONFIG.EXAMPLE.username}, error => {
+            if (error) {
+                reject(error);
+            } else {
+                console.log(`EXAMPLE USER ${CONFIG.EXAMPLE.username} DELETED`);
+                resolve();
+            }
+        })
+    });
+}
+
+const deleteTasks = () => {
+    return new Promise((resolve, reject) => {
+        User.findOne({username: CONFIG.EXAMPLE.username}, (error, user) => {
+            if (error) {
+                reject(error);
+            }
+            else {
+                Task.deleteMany({userID: user._id}, error => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        console.log(`EXAMPLE USER ${CONFIG.EXAMPLE.username} TASKS DELETED`);
+                        resolve();
+                    }
+                })
+            }
+        });
+    });
+}
 
 const createUser = () => {
     return new Promise((resolve, reject) => {
@@ -15,41 +48,45 @@ const createUser = () => {
                 reject(error);
             }
             else {
-                console.log(`EXAMPLE USER: ${exampleUser.username} SAVED`);
-                resolve(exampleUser.username);
+                console.log(`EXAMPLE USER ${CONFIG.EXAMPLE.username} SAVED`);
+                resolve();
             }
         });
     });
 }
 
-const createTasks = (username) => {
+const createTasks = () => {
     return new Promise((resolve, reject) => {
-        User.find({username: username}, (error, user) => {
+        User.findOne({username: CONFIG.EXAMPLE.username}, (error, user) => {
             if (error) {
                 reject(error);
             }
             else {
                 const taskList = ['eat', 'sleep', 'repeat'];
-                for (let i = 0; i < taskList.length; ++i) {
+                for (const [i, note] of taskList.entries()) {
                     const task = new Task({
-                        userID: user[0]._id,
-                        note: taskList[i],
+                        userID: user._id,
+                        note: note,
                         status: false,
                         prio: i + 1
                     });
                     task.save(error => {
                         if (error) {
-                            throw error;
+                            reject(error);
                         }
-                        console.log('TASK SAVED');
                     });
                 }
-                resolve(true);
+                console.log(`EXAMPLE USER ${CONFIG.EXAMPLE.username} TASKS SAVED`);
+                resolve();
             }
         });
     });
 }
 
-createUser()
-    .then(username => createTasks(username))
+mongoose.connect(CONFIG.MONGO.connection, CONFIG.MONGO.options)
+    .then(() => deleteTasks())
+    .then(() => deleteUser())
+    .then(() => createUser())
+    .then(() => createTasks())
+    .then(() => mongoose.connection.close())
     .catch(err => console.error(err));
