@@ -1,22 +1,29 @@
 const router = require('express').Router();
+const url = require('url');
+const {ROUTE} = require('../constant');
 
-router.get("/*", (request, response) => {
-    response.render("notfound");
+router.get(ROUTE.wildcard, (request, response) => {
+    response.redirect(url.format({
+        pathname: ROUTE.error,
+        query: {
+            errormsg: 'NOT FOUND'
+        }
+    }));
 });
 
-router.post("/*", (request, response) => {
+router.post(ROUTE.wildcard, (request, response) => {
     response.status(404).json({
         "answer": "NOT FOUND"
     });
 });
 
-router.put("/*", (request, response) => {
+router.put(ROUTE.wildcard, (request, response) => {
     response.status(404).json({
         "answer": "NOT FOUND"
     });
 });
 
-router.delete("/*", (request, response) => {
+router.delete(ROUTE.wildcard, (request, response) => {
     response.status(404).json({
         "answer": "NOT FOUND"
     });

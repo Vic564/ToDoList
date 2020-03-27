@@ -25,12 +25,12 @@
                         <% } %>
                     </div>
                     <div class="options-hidden">
-                        <button id="delete_button_<%= task._id %>" class="text-orangered" type="button" onclick="removeTask(this);">DELETE</button>
+                        <button id="delete_button_<%= task._id %>" class="text-red" type="button" onclick="removeTask(this);">DELETE</button>
                         <button id="edit_button_<%= task._id %>" class="text-blue" type="button" onclick="createEditForm(this);">EDIT</button>
                         <button id="complete_button_<%= task._id %>" class="<% if (!task.status) { %>text-green<% } %>" type="button" onclick="completeTask(this);">
                             <% if (task.status) { %>RECALL<% } else { %>COMPLETE<% } %>
                         </button>
-                        <button class="text-red" type="button" onclick="updatePage();">CANCEL</button>
+                        <button class="text-orangered" type="button" onclick="updatePage();">CANCEL</button>
                     </div>
                 </div>
                 <% } %>

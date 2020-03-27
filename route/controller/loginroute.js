@@ -3,12 +3,12 @@ const User = require('../../model/user');
 const loginController = {
     validateUser: (body) => {
         return new Promise((resolve, reject) => {
-            User.find({username: body.username, password: body.password}, (error, user) => {
+            User.findOne({username: body.username, password: body.password}, (error, user) => {
                 if (error) {
                     reject(error);
                 }
-                if (user.length > 0) {
-                    resolve(user[0]._id);
+                if (user) {
+                    resolve(user._id);
                 }
                 else {
                     let error = new Error();

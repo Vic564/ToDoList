@@ -3,13 +3,15 @@ require('dotenv').config();
 const VIEW = {
     index: 'index',
     list: 'list',
-    notfound: 'notfound'
+    notfound: 'notfound',
+    error: 'error'
 }
 
 const ROUTE = {
     index: '/',
-    userID: '/:userID',
-    userIDStatus: '/:userID/status',
+    list: '/list',
+    userID: '/list/:userID',
+    userIDStatus: '/list/:userID/status',
     error: '/error',
     wildcard: '/*'
 }

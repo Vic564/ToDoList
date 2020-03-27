@@ -5,7 +5,6 @@ const Task = require('./model/task');
 const {CONFIG} = require('./constant');
 
 const createUser = () => {
-    //skapar promise
     return new Promise((resolve, reject) => {
         const exampleUser = new User({
             username: CONFIG.EXAMPLE.username,
@@ -30,8 +29,7 @@ const createTasks = (username) => {
                 reject(error);
             }
             else {
-                const taskList = ["eat", "sleep", "repeat"];
-
+                const taskList = ['eat', 'sleep', 'repeat'];
                 for (let i = 0; i < taskList.length; ++i) {
                     const task = new Task({
                         userID: user[0]._id,
@@ -39,7 +37,6 @@ const createTasks = (username) => {
                         status: false,
                         prio: i + 1
                     });
-
                     task.save(error => {
                         if (error) {
                             throw error;

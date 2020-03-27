@@ -1,25 +1,22 @@
 const router = require('express').Router();
+const {ROUTE, VIEW} = require('../constant');
 
 const {listController} = require('./controller/listroute')
 
-router.get("/:userID", (request, response) => {
+router.get(ROUTE.userID, (request, response) => {
     listController.isValidUser(request.params.userID)
-    .then(id => {
-        listController.getList(id)
-        .then(list => {
-            response.render("list", {list: list});
-        })
-    })
-    .catch(error => {
-        console.error(error)
-        response.status(400).json({
-            "ansmwer": "ERROR",
-            "error": error
+        .then(id => listController.getList(id))
+        .then(list => response.render("list", {list: list}))
+        .catch(error => {
+            console.error(error)
+            response.status(400).json({
+                "ansmwer": "ERROR",
+                "error": error
+            });
         });
-    });
 });
 
-router.post("/:userID", (request, response) => {
+router.post(ROUTE.userID, (request, response) => {
     listController.isValidUser(request.params.userID)
     .then(id => {
         listController.createTask(id, request.body)
@@ -45,7 +42,7 @@ router.post("/:userID", (request, response) => {
     });
 });
 
-router.delete("/:userID", (request, response) => {
+router.delete(ROUTE.userID, (request, response) => {
     listController.isValidUser(request.params.userID)
     .then(id => {
         listController.deleteTask(request.body.taskID)
@@ -71,7 +68,7 @@ router.delete("/:userID", (request, response) => {
     });
 });
 
-router.put("/:userID", (request, response) => {
+router.put(ROUTE.userID, (request, response) => {
     listController.isValidUser(request.params.userID)
     .then(id => {
         listController.editTask(request.params.userID, request.body)
@@ -97,7 +94,7 @@ router.put("/:userID", (request, response) => {
     });
 });
 
-router.put("/:userID/status", (request, response) => {
+router.put(ROUTE.userIDStatus, (request, response) => {
     listController.isValidUser(request.params.userID)
     .then(id => {
         listController.toggleStatus(request.body)

@@ -14,12 +14,12 @@ const listController = {
     },
     isValidUser: (userID) => {
         return new Promise((resolve, reject) => {
-            User.find({_id: userID}, (error, user) => {
+            User.findOne({_id: userID}, (error, user) => {
                 if (error) {
                     reject(error);
                 }
-                else if (user.length > 0) {
-                    resolve(user[0]._id);
+                else if (user) {
+                    resolve(user._id);
                 }
                 else {
                     let error = new Error();
@@ -139,7 +139,7 @@ const listController = {
                     return await taskList.length;
                 })
                 .then(async maxPrio => {
-                    const oldPrio = await getTask(task.id)
+                    const oldPrio = await listController.getTask(task.id)
                     .then(async listObject => {
                         return await listObject.prio;
                     })
