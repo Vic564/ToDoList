@@ -13,7 +13,7 @@ const deleteUser = () => {
                 console.log(`EXAMPLE USER ${CONFIG.EXAMPLE.username} DELETED`);
                 resolve();
             }
-        })
+        });
     });
 }
 
@@ -24,14 +24,15 @@ const deleteTasks = () => {
                 reject(error);
             }
             else {
-                Task.deleteMany({userID: user._id}, error => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        console.log(`EXAMPLE USER ${CONFIG.EXAMPLE.username} TASKS DELETED`);
-                        resolve();
-                    }
-                })
+                if (user) {
+                    Task.deleteMany({userID: user._id}, error => {
+                        if (error) {
+                            reject(error);
+                        }
+                    });
+                }
+                console.log(`EXAMPLE USER ${CONFIG.EXAMPLE.username} TASKS DELETED`);
+                resolve();
             }
         });
     });
