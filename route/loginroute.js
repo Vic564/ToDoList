@@ -1,26 +1,6 @@
-const express = require('express');
+const router = require('express').Router();
 
-const User = require('../model/user');
-
-const router = express.Router();
-
-function validateUser(body) {
-    return new Promise((resolve, reject) => {
-        User.find({username: body.username, password: body.password}, (error, user) => {
-            if (error) {
-                reject(error);
-            }
-            if (user.length > 0) {
-                resolve(user[0]._id);
-            }
-            else {
-                let error = new Error();
-                error.name = "WRONG USERNAME OR PASSWORD"
-                reject(error);
-            }
-        });
-    });
-}
+const {loginController} = require('./controller/loginroute');
 
 router.get("/", (request, response) => {
     response.render("index");
@@ -28,7 +8,7 @@ router.get("/", (request, response) => {
 
 router.post("/", (request, response) => {
     const body = request.body;
-    validateUser(body)
+    loginController.validateUser(body)
     .then(result => {
         return result;
     })

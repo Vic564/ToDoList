@@ -1,19 +1,5 @@
 const mongoose = require('mongoose');
 
-require('dotenv').config();
-
-const dbHostName = process.env.DBHOSTNAME || 'localhost';
-
-const dbName = process.env.DBNAME || 'vptdldb'
-
-const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-}
-
-mongoose.connect(`mongodb://${dbHostName}/${dbName}`, options);
-
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema({

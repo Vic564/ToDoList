@@ -2,28 +2,28 @@ const User = require('./model/user');
 
 const Task = require('./model/task');
 
-require('dotenv').config();
+const {CONFIG} = require('./constant');
 
-function createUser() {
+const createUser = () => {
     //skapar promise
     return new Promise((resolve, reject) => {
         const exampleUser = new User({
-            username: process.env.EXAMPLEUSERNAME || 'johndoe',
-            password: process.env.EXAMPLEPASSWORD || '12345'
+            username: CONFIG.EXAMPLE.username,
+            password: CONFIG.EXAMPLE.password
         });
         exampleUser.save(error => {
             if (error) {
                 reject(error);
             }
             else {
-                console.log(`EXAMPLE USER: ${exampleUser} SAVED`);
+                console.log(`EXAMPLE USER: ${exampleUser.username} SAVED`);
                 resolve(exampleUser.username);
             }
         });
     });
 }
 
-function createTasks(username) {
+const createTasks = (username) => {
     return new Promise((resolve, reject) => {
         User.find({username: username}, (error, user) => {
             if (error) {
@@ -54,7 +54,5 @@ function createTasks(username) {
 }
 
 createUser()
-.then(username => {
-    createTasks(username);
-})
-.catch(err => console.error(err));
+    .then(username => createTasks(username))
+    .catch(err => console.error(err));
