@@ -17,7 +17,7 @@ const ROUTE = {
 const CONFIG = {
     PORT: process.env.PORT || 8080,
     MONGO: {
-        connection: `mongodb://${process.env.DBHOSTNAME || 'localhost'}/${process.env.DBNAME || 'test'}`,
+        connection: `mongodb://${process.env.DBHOSTNAME || 'localhost'}/${process.env.DBNAME || 'todolistapp'}`,
         options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
