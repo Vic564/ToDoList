@@ -90,4 +90,7 @@ mongoose.connect(CONFIG.MONGO.connection, CONFIG.MONGO.options)
     .then(() => createUser())
     .then(() => createTasks())
     .then(() => mongoose.connection.close())
-    .catch(err => console.error(err));
+    .catch(err => {
+        console.error(err);
+        mongoose.connection.close();
+    });
